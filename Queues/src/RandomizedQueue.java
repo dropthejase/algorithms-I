@@ -1,6 +1,7 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdOut;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
 
@@ -24,6 +25,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // add the item
     public void enqueue(Item item) {
+        if (item == null)
+            throw new IllegalArgumentException("null argument not allowed");
+
         // resize if queue is full
         if (size == queue.length) {
             resize(queue.length * 2);
@@ -33,21 +37,19 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // remove and return a random item
     public Item dequeue() {
+        if (isEmpty())
+            throw new NoSuchElementException("Queue is empty.");
 
-        int idx = StdRandom.uniformInt(size - 1);
+        int idx = StdRandom.uniformInt(size);
         Item removed = queue[idx];
 
-        // shift items in queue
-        for (int i = idx; i < size - 1; i++) {
-            queue[i] = queue[i + 1];
-        }
-        queue[queue.length - 1] = null;
+        // replace with last item
+        queue[idx] = queue[--size];
         
         // half queue size if queue is quarter full
         if (size > 0 && size - 1 == queue.length / 4)
             resize(queue.length / 2);
         
-        size--;
         return removed;
     }
 
@@ -62,6 +64,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // return a random item (but do not remove it)
     public Item sample() {
+        if (isEmpty())
+            throw new NoSuchElementException("Queue is empty.");
+
         int idx = StdRandom.uniformInt(size);
         return queue[idx];
     }
@@ -72,12 +77,23 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
         private class RandomizedQueueIterator implements Iterator<Item> {
             private int i = 0;
+            private Item[] queueIterator;
+            
+            // create copy of queue and shuffle it
+            private RandomizedQueueIterator() {
+                queueIterator = (Item[]) new Object[size];
+                for (int idx = 0; idx < size; idx++) {
+                    queueIterator[idx] = queue[idx];
+                }
+                StdRandom.shuffle(queueIterator);
+            }
+
             public boolean hasNext() { 
                 return i < size;
             }
             public Item next() {
                 if (hasNext())
-                    return queue[i++];
+                    return queueIterator[i++];
                 throw new NoSuchElementException("No more items!");
             }
             public void remove() {
@@ -88,40 +104,50 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // unit testing (required)
     public static void main(String[] args) {
         RandomizedQueue<Object> randomQueue = new RandomizedQueue<>();
-        System.out.println("Empty: " + randomQueue.isEmpty());
+        StdOut.println("Empty: " + randomQueue.isEmpty());
 
         randomQueue.enqueue(0);
         randomQueue.enqueue(1);
         randomQueue.enqueue(2);
         randomQueue.enqueue(3);
 
-        System.out.println("Size: " + randomQueue.size());
-        System.out.println("Empty: " + randomQueue.isEmpty());
-        System.out.println("Sample: " + randomQueue.sample());
+        StdOut.println("Size: " + randomQueue.size());
+        StdOut.println("Empty: " + randomQueue.isEmpty());
+        StdOut.println("Sample: " + randomQueue.sample());
 
 
-        System.out.println("Queue Length: " + randomQueue.queue.length);
+        StdOut.println("Queue Length: " + randomQueue.queue.length);
 
         for (Object i: randomQueue) {
-            System.out.println(i);
+            StdOut.println(i);
         }
 
-        System.out.println("Removing: " + randomQueue.dequeue());
+        StdOut.println("Removing: " + randomQueue.dequeue());
 
-        System.out.println("Size: " + randomQueue.size());
-        System.out.println("Queue Length: " + randomQueue.queue.length);
+        StdOut.println("Size: " + randomQueue.size());
+        StdOut.println("Queue Length: " + randomQueue.queue.length);
 
         for (Object i: randomQueue) {
-            System.out.println(i);
+            StdOut.println(i);
+        }
+        for (Object i: randomQueue) {
+            StdOut.println(i);
         }
 
-        System.out.println("Removing: " + randomQueue.dequeue());
-        System.out.println("Removing: " + randomQueue.dequeue());
-        System.out.println("Size: " + randomQueue.size());
-        System.out.println("Queue Length: " + randomQueue.queue.length);
+        for (Object i: randomQueue) {
+            for (Object j: randomQueue) {
+                StdOut.print(i);
+                StdOut.print(j);
+                StdOut.print("\n");
+            }
+        }
+        StdOut.println("Removing: " + randomQueue.dequeue());
+        StdOut.println("Removing: " + randomQueue.dequeue());
+        StdOut.println("Size: " + randomQueue.size());
+        StdOut.println("Queue Length: " + randomQueue.queue.length);
 
         for (Object i: randomQueue) {
-            System.out.println(i);
+            StdOut.println(i);
         }
     }
 }
