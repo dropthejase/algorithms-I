@@ -8,7 +8,6 @@ public class BruteCollinearPoints {
     LineSegment[] segments;
     int numSegments;
 
-
     // finds all line segments containing 4 points
     public BruteCollinearPoints(Point[] points) {
 
@@ -28,8 +27,8 @@ public class BruteCollinearPoints {
 
                         if (pq == pr && pr == ps && pq == ps) {
                             if (points[p].compareTo(points[q]) == -1 && points[q].compareTo(points[r]) == -1 && points[r].compareTo(points[s]) == -1) {
-                                segments[p] = new LineSegment(points[p], points[s]);
-                                System.out.println(segments[p]);
+                                segments[numSegments] = new LineSegment(points[p], points[s]);
+                                System.out.println(segments[numSegments]);
                                 numSegments++;
                             }
                         }
