@@ -15,26 +15,23 @@ public class BruteCollinearPoints {
         segments = new LineSegment[points.length];
 
         for (int p = 0; p < points.length; p++) {
-            int tempCount = 0;
 
             for (int q = 0; q < points.length; q++) {
-                if (points[p].compareTo(points[q]) == -1) tempCount++; else tempCount = 0;
-                if ()
 
                 for (int r = 0; r < points.length; r++) {
-                    if (points[q].compareTo(points[r]) == -1) tempCount++; else tempCount = 0;
-
+                    
                     for (int s = 0; s < points.length; s++) {
-                        if (points[r].compareTo(points[s]) == -1) tempCount++; else tempCount = 0;
 
                         double pq = points[p].slopeTo(points[q]);
                         double pr = points[p].slopeTo(points[r]);
                         double ps = points[p].slopeTo(points[s]);
 
                         if (pq == pr && pr == ps && pq == ps) {
-                            segments[p] = new LineSegment(points[p], points[s]);
-                            System.out.println(segments[p]);
-                            numSegments++;
+                            if (points[p].compareTo(points[q]) == -1 && points[q].compareTo(points[r]) == -1 && points[r].compareTo(points[s]) == -1) {
+                                segments[p] = new LineSegment(points[p], points[s]);
+                                System.out.println(segments[p]);
+                                numSegments++;
+                            }
                         }
                     }
                 }
@@ -79,6 +76,5 @@ public class BruteCollinearPoints {
 
         // Create Brute Collinear Points
         BruteCollinearPoints bcp = new BruteCollinearPoints(points);
-        System.out.println(bcp.numberOfSegments());
     }
 }
