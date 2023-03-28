@@ -52,7 +52,7 @@ public class Point implements Comparable<Point> {
 
         // horizontal
         if (this.y == that.y)
-            return 0.0;
+            return +0.0;
         // vertical
         if (this.x == that.x)
             return Double.POSITIVE_INFINITY;
@@ -75,12 +75,15 @@ public class Point implements Comparable<Point> {
      *         argument point
      */
     public int compareTo(Point that) {
+        // that point is greater
         if (that.y >= this.y && that.x > this.x)
-            return 1;
+            return -1;
+        // that point is equal
         else if (that.y == this.y && that.x == this.x)
             return 0;
+        // that point is lesser
         else
-            return -1;
+            return 1;
     }
 
     /**
@@ -91,7 +94,6 @@ public class Point implements Comparable<Point> {
      */
     public Comparator<Point> slopeOrder() {
         return new slopeOrderComparator();
-        /* YOUR CODE HERE */
     }
 
     private class slopeOrderComparator implements Comparator<Point> {
@@ -116,10 +118,11 @@ public class Point implements Comparable<Point> {
     /**
      * Unit tests the Point data type.
      */
+
     public static void main(String[] args) {
         Point point0 = new Point(0,0);
-        Point point1 = new Point(1,2);
-        Point point2 = new Point(1,0);
+        Point point1 = new Point(100,200);
+        Point point2 = new Point(100,0);
 
         System.out.println("compareTo (point0 -> point 1): " + point0.compareTo(point1));
         System.out.println("compareTo (point0 -> point 2): " + point0.compareTo(point2));
@@ -128,5 +131,20 @@ public class Point implements Comparable<Point> {
         System.out.println("Slope (point0 -> point 2): " + point0.slopeTo(point2));
 
         System.out.println("Compare point 1 and point 2: " + point0.slopeOrder().compare(point1, point2));
+
+        // draw the points
+        StdDraw.setXscale(-500, 500);
+        StdDraw.setYscale(-500, 500);
+        StdDraw.line(-500,0,500,0);
+        StdDraw.line(0,-500,0,500);
+        StdDraw.setPenRadius(0.005);
+        StdDraw.setPenColor(StdDraw.BLUE);
+        point0.draw();
+        point1.draw();
+        point2.draw();
+
+        point0.drawTo(point1);
+        point0.drawTo(point2);
+
     }
 }
