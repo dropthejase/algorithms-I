@@ -5,6 +5,7 @@ import edu.princeton.cs.algs4.StdDraw;
 public class FastCollinearPoints {
 
     private LineSegment[] segments;
+    private Point[] segmentPairs;
     private int numSegments;
 
     // finds all line segments containing 4 or more points
@@ -22,7 +23,8 @@ public class FastCollinearPoints {
         }
 
         // create sorted array
-        segments = new LineSegment[points.length];
+        segments = new LineSegment[points.length * points.length]; // for N x N grid cases
+        segmentPairs = new Point[points.length * points.length];
         numSegments = 0;
 
         Point[] pointsSorted = Arrays.copyOf(points, points.length);
@@ -33,6 +35,8 @@ public class FastCollinearPoints {
             if (pointsSorted[i].compareTo(pointsSorted[i-1]) == 0)
                 throw new IllegalArgumentException("No duplicates");
         }
+
+        // System.out.println(Arrays.toString(pointsSorted));
 
         /////// FOR EACH POINT P, IF SLOPE ORDER
 
@@ -45,7 +49,7 @@ public class FastCollinearPoints {
 
             // calculate slopes against point p
             for (int j = i + 1; j < pointsSorted.length; j++) {
-                if (i == j) continue;
+                // if (i == j) continue;
                 pArray[idx] = pointsSorted[j];
                 pArraySlopes[idx] = p.slopeTo(pointsSorted[j]);
                 idx++;
@@ -54,6 +58,10 @@ public class FastCollinearPoints {
             // sort the arrays
             Arrays.sort(pArray, p.slopeOrder());
             Arrays.sort(pArraySlopes);
+
+            // System.out.println("P: " + p);
+            // System.out.println("pArray: " + Arrays.toString(pArray));
+            // System.out.println("pArraySlopes " + Arrays.toString(pArraySlopes));
 
             // isolate collinear points only
             Point[] collinear = new Point[pointsSorted.length];
@@ -67,29 +75,49 @@ public class FastCollinearPoints {
             for (int j = 1; j < pArraySlopes.length; j++) {
 
                 // if slope is the same, continue...
-                if (pArraySlopes[j] == comparatorSlope) {
+                if (pArraySlopes[j] == comparatorSlope && j != pArraySlopes.length - 1) {
                     colIdx++;
                     collinear[colIdx] = pArray[j];
                     continue;
                 }
+
                 else {
+                    // add the last collinear point if last point is end of pArraySlopes
+                    if (pArraySlopes[j] == comparatorSlope) {
+                        colIdx++;
+                        collinear[colIdx] = pArray[j];
+                    }
                     // else if we find 2 or more additional collinear points
-                    // add line segment and break out of loop
+                    // add line segment
                     if (colIdx >= 3) {
                         Point[] tempCollinear = Arrays.copyOf(collinear, colIdx + 1);
                         // System.out.println("Temp: " + Arrays.toString(tempCollinear));
-                        segments[numSegments++] = new LineSegment(tempCollinear[0], tempCollinear[tempCollinear.length - 1]);
-                        break;
-                    }
-                    // else change the comparator
-                    else {
-                        comparatorSlope = pArraySlopes[j];
-                        colIdx = 1;
-                        collinear[colIdx] = pArray[j];               
-                    }
+                        
+                        // check duplicate segments
+                        if (numSegments == 0 || noDuplicateSegments(comparatorSlope, tempCollinear[tempCollinear.length - 1])) {
+                            segments[numSegments] = new LineSegment(tempCollinear[0], tempCollinear[tempCollinear.length - 1]);
+                            segmentPairs[numSegments * 2] = tempCollinear[0];
+                            segmentPairs[numSegments * 2 + 1] = tempCollinear[tempCollinear.length - 1];
+                            numSegments++;
+                        }
+                    }         
                 }
+
+                // change the comparator
+                comparatorSlope = pArraySlopes[j];
+                colIdx = 1;
+                collinear[colIdx] = pArray[j];      
             }
         }
+    }
+
+    // check duplicate segments
+    private boolean noDuplicateSegments(double comparatorSlope, Point q) {
+        for (int pair = 0; pair < numSegments * 2; pair += 2) {
+            if ((segmentPairs[pair]).slopeTo(segmentPairs[pair + 1]) == comparatorSlope && segmentPairs[pair + 1].compareTo(q) == 0)
+                return false;
+        }
+        return true;
     }
 
     // the number of line segments
@@ -115,7 +143,7 @@ public class FastCollinearPoints {
         }
 
         // draw the points
-        StdDraw.enableDoubleBuffering();
+        /*StdDraw.enableDoubleBuffering();
         StdDraw.setXscale(0, 32768);
         StdDraw.setYscale(0, 32768);
         StdDraw.line(0, 0, 32768, 0);
@@ -126,7 +154,7 @@ public class FastCollinearPoints {
         for (Point p : points) {
             p.draw();
         }
-        StdDraw.show();
+        StdDraw.show();*/
 
         // Create Fast Collinear Points
         Arrays.sort(points);

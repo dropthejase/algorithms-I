@@ -76,7 +76,6 @@ public class Point implements Comparable<Point> {
      */
     public int compareTo(Point that) {
         // that point is greater
-
         if (that.y > this.y || (that.y == this.y && that.x > this.x))
             return -1;
         // that point is equal
