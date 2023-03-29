@@ -1,33 +1,35 @@
+import java.util.Arrays;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
-import edu.princeton.cs.algs4.StdIn;
-import edu.princeton.cs.algs4.StdOut;
+
 
 public class BruteCollinearPoints {
 
-    LineSegment[] segments;
-    int numSegments;
+    private LineSegment[] segments;
+    private int numSegments;
 
     // finds all line segments containing 4 points
     public BruteCollinearPoints(Point[] points) {
 
         segments = new LineSegment[points.length];
+        Point[] pointsSorted = points;
+        Arrays.sort(pointsSorted);
 
-        for (int p = 0; p < points.length; p++) {
+        for (int p = 0; p < pointsSorted.length; p++) {
 
-            for (int q = 0; q < points.length; q++) {
+            for (int q = 0; q < pointsSorted.length; q++) {
 
-                for (int r = 0; r < points.length; r++) {
+                for (int r = 0; r < pointsSorted.length; r++) {
                     
-                    for (int s = 0; s < points.length; s++) {
+                    for (int s = 0; s < pointsSorted.length; s++) {
 
-                        double pq = points[p].slopeTo(points[q]);
-                        double pr = points[p].slopeTo(points[r]);
-                        double ps = points[p].slopeTo(points[s]);
+                        double pq = pointsSorted[p].slopeTo(pointsSorted[q]);
+                        double pr = pointsSorted[p].slopeTo(pointsSorted[r]);
+                        double ps = pointsSorted[p].slopeTo(pointsSorted[s]);
 
                         if (pq == pr && pr == ps && pq == ps) {
-                            if (points[p].compareTo(points[q]) == -1 && points[q].compareTo(points[r]) == -1 && points[r].compareTo(points[s]) == -1) {
-                                segments[numSegments] = new LineSegment(points[p], points[s]);
+                            if (pointsSorted[p].compareTo(pointsSorted[q]) == -1 && pointsSorted[q].compareTo(pointsSorted[r]) == -1 && pointsSorted[r].compareTo(pointsSorted[s]) == -1) {
+                                segments[numSegments] = new LineSegment(pointsSorted[p], pointsSorted[s]);
                                 System.out.println(segments[numSegments]);
                                 numSegments++;
                             }
@@ -36,6 +38,9 @@ public class BruteCollinearPoints {
                 }
             }
         }
+
+        segments = Arrays.copyOf(segments, numSegments);
+        // System.out.println(Arrays.toString(segments));
     }
 
     // the number of line segments

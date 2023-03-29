@@ -4,8 +4,8 @@ import edu.princeton.cs.algs4.StdDraw;
 
 public class FastCollinearPoints {
 
-    LineSegment[] segments;
-    int numSegments;
+    private LineSegment[] segments;
+    private int numSegments;
 
     // finds all line segments containing 4 or more points
     public FastCollinearPoints(Point[] points) {
@@ -66,8 +66,6 @@ public class FastCollinearPoints {
             }
             // System.out.println("Collinear only: " + Arrays.toString(collinear));
 
-            
-            
             // add the line segments
             Point[] tempCollinear = Arrays.copyOf(collinear, colIdx + 1);
             Arrays.sort(tempCollinear);

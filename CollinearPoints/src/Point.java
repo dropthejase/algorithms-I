@@ -49,17 +49,17 @@ public class Point implements Comparable<Point> {
      * @return the slope between this point and the specified point
      */
     public double slopeTo(Point that) {
-
+        // equal
+        if (this.x == that.x && this.y == that.y)
+            return Double.NEGATIVE_INFINITY;
         // horizontal
         if (this.y == that.y)
             return +0.0;
         // vertical
         if (this.x == that.x)
             return Double.POSITIVE_INFINITY;
-        // equal
-        if (this.x == that.x && this.y == that.y)
-            return Double.NEGATIVE_INFINITY;
-        return (double)(that.y - this.y) / (that.x - this.x);
+
+        return (double) (that.y - this.y) / (that.x - this.x);
     }
 
     /**
@@ -99,7 +99,9 @@ public class Point implements Comparable<Point> {
 
     private class slopeOrderComparator implements Comparator<Point> {
         public int compare(Point first, Point second) {
-            return Double.compare(slopeTo(first), slopeTo(second));
+            if (slopeTo(first) < slopeTo(second)) return -1;
+            if (slopeTo(first) > slopeTo(second)) return +1;
+            return 0;
         }
     }
 
@@ -121,9 +123,9 @@ public class Point implements Comparable<Point> {
      */
 
     public static void main(String[] args) {
-        Point point0 = new Point(0,0);
-        Point point1 = new Point(100,200);
-        Point point2 = new Point(100,0);
+        Point point0 = new Point(0, 0);
+        Point point1 = new Point(100, 200);
+        Point point2 = new Point(100, 0);
 
         System.out.println("compareTo (point0 -> point 1): " + point0.compareTo(point1));
         System.out.println("compareTo (point0 -> point 2): " + point0.compareTo(point2));
@@ -136,8 +138,8 @@ public class Point implements Comparable<Point> {
         // draw the points
         StdDraw.setXscale(-500, 500);
         StdDraw.setYscale(-500, 500);
-        StdDraw.line(-500,0,500,0);
-        StdDraw.line(0,-500,0,500);
+        StdDraw.line(-500, 0, 500, 0);
+        StdDraw.line(0, -500, 0, 500);
         StdDraw.setPenRadius(0.005);
         StdDraw.setPenColor(StdDraw.BLUE);
         point0.draw();
