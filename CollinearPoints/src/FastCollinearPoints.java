@@ -36,10 +36,6 @@ public class FastCollinearPoints {
                 throw new IllegalArgumentException("No duplicates");
         }
 
-        // System.out.println(Arrays.toString(pointsSorted));
-
-        /////// FOR EACH POINT P, IF SLOPE ORDER
-
         // MAIN LOOP
         for (int i = 0; i < pointsSorted.length - 1; i++) {
             Point p = pointsSorted[i];
@@ -58,10 +54,6 @@ public class FastCollinearPoints {
             // sort the arrays
             Arrays.sort(pArray, p.slopeOrder());
             Arrays.sort(pArraySlopes);
-
-            // System.out.println("P: " + p);
-            // System.out.println("pArray: " + Arrays.toString(pArray));
-            // System.out.println("pArraySlopes " + Arrays.toString(pArraySlopes));
 
             // isolate collinear points only
             Point[] collinear = new Point[pointsSorted.length];
@@ -90,17 +82,17 @@ public class FastCollinearPoints {
                     // else if we find 2 or more additional collinear points
                     // add line segment
                     if (colIdx >= 3) {
-                        Point[] tempCollinear = Arrays.copyOf(collinear, colIdx + 1);
-                        // System.out.println("Temp: " + Arrays.toString(tempCollinear));
+                        // System.out.println(Arrays.toString(collinear));
                         
                         // check duplicate segments
-                        if (numSegments == 0 || noDuplicateSegments(comparatorSlope, tempCollinear[tempCollinear.length - 1])) {
-                            segments[numSegments] = new LineSegment(tempCollinear[0], tempCollinear[tempCollinear.length - 1]);
-                            segmentPairs[numSegments * 2] = tempCollinear[0];
-                            segmentPairs[numSegments * 2 + 1] = tempCollinear[tempCollinear.length - 1];
+                        if (noDuplicateSegments(comparatorSlope, collinear[colIdx])) {
+                            segments[numSegments] = new LineSegment(collinear[0], collinear[colIdx]);
+                            segmentPairs[numSegments * 2] = collinear[0];
+                            segmentPairs[numSegments * 2 + 1] = collinear[colIdx];
                             numSegments++;
                         }
                     }         
+                }         
                 }
 
                 // change the comparator
@@ -113,6 +105,7 @@ public class FastCollinearPoints {
 
     // check duplicate segments
     private boolean noDuplicateSegments(double comparatorSlope, Point q) {
+        if (numSegments == 0) return true;
         for (int pair = 0; pair < numSegments * 2; pair += 2) {
             if ((segmentPairs[pair]).slopeTo(segmentPairs[pair + 1]) == comparatorSlope && segmentPairs[pair + 1].compareTo(q) == 0)
                 return false;
