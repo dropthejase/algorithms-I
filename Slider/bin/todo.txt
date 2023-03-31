@@ -1,0 +1,5 @@
+You need to do several things:
+
+
+1) moves should not be based on number of rounds of the while loop but cached in each instance
+2) thus, min moves = moves of the goal node
