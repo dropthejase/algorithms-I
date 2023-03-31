@@ -1,6 +1,4 @@
-import java.util.Arrays;
 import java.util.Comparator;
-
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Stack;
@@ -8,10 +6,6 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
 
-    private final MinPQ<SearchNode> pq;
-    private final MinPQ<SearchNode> pqTwin;
-
-    private final Stack<Board> solutions;
     private final SearchNode finalNode;
     private final int minMoves;
 
@@ -20,14 +14,12 @@ public class Solver {
         if (initial == null) throw new IllegalArgumentException();
 
         SearchNode initialNode = new SearchNode(initial, null, 0);
-        pq = new MinPQ<>(new searchNodeOrderComparator());
+        MinPQ<SearchNode> pq = new MinPQ<>(new searchNodeOrderComparator());
 
         // add twin of initial node to test unsolvability
         Board initialTwin = initial.twin();
         SearchNode initialNodeTwin = new SearchNode(initialTwin, null, 0);
-        pqTwin = new MinPQ<>(new searchNodeOrderComparator());
-
-        solutions = new Stack<>();
+        MinPQ<SearchNode> pqTwin = new MinPQ<>(new searchNodeOrderComparator());
 
         // initial insertion and deletion
         pq.insert(initialNode);
@@ -92,11 +84,7 @@ public class Solver {
         public int compare(SearchNode first, SearchNode second) {
             if (first.priority < second.priority) return -1;
             else if (first.priority > second.priority) return +1;
-            else {
-                if (first.board.manhattan() < second.board.manhattan()) return -1;
-                else if (first.board.manhattan() > second.board.manhattan()) return 1;
-                else return 0;
-            }
+            else return 0;
         }
     }
 
@@ -115,6 +103,7 @@ public class Solver {
         if (!isSolvable())
             return null;
 
+        Stack<Board> solutions = new Stack<>();
         SearchNode pointer = finalNode;
         while (pointer != null) {
             solutions.push(pointer.board);
